@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القلم</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#1B4F72;--pl:#2471A3;--pp:#D6EAF8;
+  --a:#C9A84C;--al:#FAD7A0;
+  --g:#1E8449;--gl:#D5F5E3;
+  --r:#C0392B;--rl:#FADBD8;
+  --bg:#EEF3F8;--w:#fff;--tx:#1A2533;--tm:#5D6D7E;--b:#D5E0EC;
+  --sw:250px
+}
+body{font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;font-size:14px}
+
+/* SIDEBAR */
+#sb{width:var(--sw);background:#0F2D48;position:fixed;right:0;top:0;bottom:0;display:flex;flex-direction:column;z-index:200;transition:transform .25s ease}
+#sb.off{transform:translateX(110%)}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150}
+#ov.on{display:block}
+.sl{padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.li{width:40px;height:40px;background:linear-gradient(135deg,var(--a),#E8B84B);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.lt h2{color:#fff;font-size:1.2rem;font-weight:700}
+.lt p{color:rgba(255,255,255,.4);font-size:.68rem}
+.sm{padding:14px 10px;flex:1;overflow-y:auto}
+.ml{font-size:.6rem;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:10px 10px 4px}
+.mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.6);transition:all .15s;margin-bottom:1px}
+.mi:hover{background:rgba(255,255,255,.07);color:#fff}
+.mi.on{background:var(--a);color:#0F2D48;font-weight:700}
+.sf{padding:12px 18px;border-top:1px solid rgba(255,255,255,.07);font-size:.68rem;color:rgba(255,255,255,.2);text-align:center}
+
+/* MAIN */
+#mn{margin-right:var(--sw);flex:1;display:flex;flex-direction:column;transition:margin .25s ease}
+#mn.wide{margin-right:0}
+.tb{background:var(--w);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:50}
+.tbL{display:flex;align-items:center;gap:12px}
+#hbtn{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--b);background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+#hbtn span{display:block;height:2px;background:var(--p);border-radius:2px;transition:width .2s}
+#hbtn span:nth-child(1){width:16px}
+#hbtn span:nth-child(2){width:16px}
+#hbtn span:nth-child(3){width:10px;align-self:flex-end}
+#ptitle{font-weight:700;color:var(--p);font-size:1rem}
+#psub{font-size:.75rem;color:var(--tm)}
+#tact{display:flex;gap:8px}
+.ct{padding:22px 24px;flex:1}
+
+/* PAGES */
+.pg{display:none}.pg.on{display:block}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.sc{background:var(--w);border-radius:12px;padding:18px;border:1px solid var(--b);display:flex;align-items:center;gap:14px}
+.si{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.sn{font-size:1.8rem;font-weight:800;line-height:1}
+.sl2{font-size:.75rem;color:var(--tm);margin-top:2px}
+
+/* PANEL */
+.pn{background:var(--w);border-radius:12px;border:1px solid var(--b);overflow:hidden;margin-bottom:18px}
+.ph{padding:14px 20px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;font-weight:700}
+.pb{padding:20px}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg);padding:10px 14px;text-align:right;font-size:.75rem;color:var(--tm);font-weight:600;border-bottom:1px solid var(--b)}
+td{padding:11px 14px;border-bottom:1px solid #f0f4f8;font-size:.85rem;vertical-align:middle}
+tr:last-child td{border:none}
+tr:hover td{background:#f8fafc}
+
+/* BTN */
+.btn{padding:8px 16px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--p);color:#fff}.bp:hover{opacity:.9}
+.ba{background:var(--a);color:#0F2D48}.ba:hover{opacity:.9}
+.bo{background:transparent;border:1.5px solid var(--b);color:var(--tx)}.bo:hover{border-color:var(--p);color:var(--p)}
+.bd{background:var(--rl);color:var(--r);border:1px solid #f1948a}.bd:hover{background:var(--r);color:#fff}
+.bg2{background:var(--gl);color:var(--g);border:1px solid #82e0aa}.bg2:hover{background:var(--g);color:#fff}
+.sm2{padding:5px 12px;font-size:.75rem}
+
+/* BADGE */
+.bx{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600}
+.bb{background:var(--pp);color:var(--p)}
+.bg3{background:var(--gl);color:var(--g)}
+.bgo{background:#fef9e7;color:#9a6f0a}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fi{display:flex;flex-direction:column;gap:5px}.fi.fw{grid-column:1/-1}
+label{font-size:.78rem;font-weight:600}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--b);border-radius:7px;font-size:.85rem;font-family:inherit;color:var(--tx);outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--p)}
+select{cursor:pointer}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center}
+.mo.on{display:flex}
+.md{background:var(--w);border-radius:14px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.mh{padding:18px 22px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--w);z-index:1}
+.mh h3{font-weight:700;font-size:.95rem}
+.xb{width:28px;height:28px;border-radius:7px;border:none;background:var(--bg);cursor:pointer;font-size:1rem}
+.xb:hover{background:var(--rl);color:var(--r)}
+.mb{padding:20px 22px}
+.mf{padding:12px 22px 18px;border-top:1px solid var(--b);display:flex;gap:8px;justify-content:flex-end}
+
+/* SEARCH */
+.sr{display:flex;gap:10px;margin-bottom:16px}
+.sw2{position:relative;flex:1}
+.sw2 input{width:100%;padding-right:36px}
+.si2{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--tm);font-size:.85rem;pointer-events:none}
+
+/* EMPTY */
+.em{text-align:center;padding:50px 20px;color:var(--tm)}
+.em div{font-size:2.8rem;margin-bottom:12px;opacity:.5}
+.em h3{font-size:.95rem;font-weight:600;margin-bottom:4px}
+.em p{font-size:.8rem}
+
+/* CLASS GRID */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.cc{background:var(--w);border:1.5px solid var(--b);border-radius:12px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .15s}
+.cc:hover{border-color:var(--a);transform:translateY(-2px)}
+.cn{font-size:2rem;font-weight:800;color:var(--p);line-height:1;margin-bottom:4px}
+
+/* BOOK GRID */
+.bkg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.bkc{background:var(--w);border:1.5px solid var(--b);border-radius:10px;padding:16px;transition:all .15s}
+.bkc:hover{border-color:var(--p);transform:translateY(-2px)}
+
+/* CARD GRID */
+.cdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.scd{background:linear-gradient(135deg,#1B4F72,#2471A3);border-radius:14px;color:#fff;cursor:pointer;overflow:hidden;transition:transform .15s,box-shadow .15s;position:relative}
+.scd:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(27,79,114,.3)}
+.scd-in{padding:16px}
+.scd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.scd-sch{font-size:.68rem;opacity:.7;font-weight:600}
+.scd-body{display:flex;align-items:center;gap:12px}
+.scd-av{width:46px;height:46px;background:rgba(255,255,255,.15);border-radius:50%;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0}
+.scd-nm{font-size:.95rem;font-weight:800;margin-bottom:4px}
+.scd-cl{display:inline-block;background:rgba(201,168,76,.25);border:1px solid rgba(201,168,76,.5);color:#FFE082;padding:1px 8px;border-radius:20px;font-size:.67rem;font-weight:700}
+.scd-ft{display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
+.scd-id{font-size:.62rem;opacity:.45;font-family:monospace}
+.scd-yr{font-size:.67rem;font-weight:700;color:#FAD7A0}
+
+/* PRINT PREVIEW */
+.ppv{background:linear-gradient(135deg,#1B4F72,#2471A3);border-radius:14px;color:#fff;padding:24px;position:relative;overflow:hidden}
+.ppv::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(201,168,76,.2) 0%,transparent 50%)}
+.ppv-in{position:relative;z-index:1}
+.ppv-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.15)}
+.ppv-logo{display:flex;align-items:center;gap:10px}
+.ppv-icon{width:38px;height:38px;background:rgba(201,168,76,.3);border:1px solid rgba(201,168,76,.5);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.ppv-nm h3{font-size:.95rem;font-weight:700}
+.ppv-nm span{font-size:.65rem;opacity:.5}
+.ppv-tp{font-size:.62rem;font-weight:700;letter-spacing:.1em;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:4px 10px;border-radius:20px}
+.ppv-bd{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.ppv-av{width:70px;height:70px;background:rgba(255,255,255,.15);border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;flex-shrink:0}
+.ppv-info h2{font-size:1.2rem;font-weight:800;margin-bottom:6px}
+.ppv-bg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.ppv-bg span{padding:2px 10px;border-radius:20px;font-size:.67rem;font-weight:700}
+.ppv-g{background:rgba(201,168,76,.25);border:1px solid rgba(201,168,76,.5);color:#FFE082}
+.ppv-w{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85)}
+.ppv-d{font-size:.7rem;opacity:.55;margin-top:2px}
+.ppv-ft{background:rgba(0,0,0,.2);margin:0 -24px -24px;padding:12px 24px;display:flex;justify-content:space-between}
+.ppv-id{font-size:.65rem;opacity:.45;font-family:monospace}
+.ppv-yr{font-size:.7rem;font-weight:700;color:#FAD7A0}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#1A2533;color:#fff;padding:10px 20px;border-radius:8px;font-size:.82rem;font-weight:600;z-index:9999;transition:transform .25s ease;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+#toast.ok{background:var(--g)}
+#toast.er{background:var(--r)}
+
+/* DIST BAR */
+.db{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.db-lb{width:56px;font-size:.75rem;color:var(--tm);font-weight:600;flex-shrink:0}
+.db-br{flex:1;background:var(--bg);border-radius:5px;height:18px;overflow:hidden}
+.db-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--pl));border-radius:5px;transition:width .4s ease}
+.db-ct{width:22px;text-align:center;font-size:.75rem;font-weight:700;color:var(--p)}
+
+/* PRINT */
+.prt{display:none}
+@media print{
+  body>*:not(.prt){display:none!important}
+  .prt{display:flex!important;position:fixed;inset:0;background:#fff;align-items:center;justify-content:center;flex-wrap:wrap;gap:8mm;padding:8mm}
+  .prc{width:85.6mm;height:53.98mm;background:linear-gradient(135deg,#1B4F72,#2471A3)!important;border-radius:5mm;color:#fff!important;padding:5mm;print-color-adjust:exact;-webkit-print-color-adjust:exact;position:relative;overflow:hidden;page-break-inside:avoid;font-family:Tahoma,Arial,sans-serif}
+  .prc-p{position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(201,168,76,.2) 0%,transparent 50%)}
+  .prc-i{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  .prc-tp{font-size:7pt;opacity:.75;font-weight:700}
+  .prc-bd{display:flex;align-items:center;gap:3mm}
+  .prc-av{width:12mm;height:12mm;background:rgba(255,255,255,.2);border-radius:50%;border:1pt solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:12pt;font-weight:700}
+  .prc-nm{font-size:11pt;font-weight:800}
+  .prc-cl{font-size:7pt;color:#FFE082;margin-top:1mm}
+  .prc-ft{display:flex;justify-content:space-between;border-top:1pt solid rgba(255,255,255,.15);padding-top:1.5mm}
+  .prc-id{font-size:6pt;opacity:.45;font-family:monospace}
+  .prc-yr{font-size:6.5pt;color:#FAD7A0;font-weight:700}
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div id="ov" onclick="tog()"></div>
+
+<!-- SIDEBAR -->
+<aside id="sb">
+  <div class="sl">
+    <div class="li">✏️</div>
+    <div class="lt"><h2>القلم</h2><p>إدارة المدرسة</p></div>
+  </div>
+  <div class="sm">
+    <div class="ml">الرئيسية</div>
+    <div class="mi on" onclick="go('dash',this)"><span>🏠</span> لوحة التحكم</div>
+    <div class="ml">الإدارة</div>
+    <div class="mi" onclick="go('stu',this)"><span>👨‍🎓</span> الطلاب</div>
+    <div class="mi" onclick="go('cls',this)"><span>🏫</span> الصفوف</div>
+    <div class="mi" onclick="go('bk',this)"><span>📚</span> الكتب</div>
+    <div class="mi" onclick="go('cd',this)"><span>🪪</span> البطاقات</div>
+  </div>
+  <div class="sf">© 2025 القلم</div>
+</aside>
+
+<!-- MAIN -->
+<main id="mn">
+  <div class="tb">
+    <div class="tbL">
+      <button id="hbtn" onclick="tog()">
+        <span></span><span></span><span></span>
+      </button>
+      <div>
+        <div id="ptitle">لوحة التحكم</div>
+        <div id="psub">مرحباً بك في نظام القلم</div>
+      </div>
+    </div>
+    <div id="tact"></div>
+  </div>
+
+  <div class="ct">
+
+    <!-- DASHBOARD -->
+    <div class="pg on" id="p-dash">
+      <div class="sg">
+        <div class="sc"><div class="si" style="background:var(--pp)">👨‍🎓</div><div><div class="sn" id="ds-s">0</div><div class="sl2">الطلاب</div></div></div>
+        <div class="sc"><div class="si" style="background:#fef9e7">🏫</div><div><div class="sn">9</div><div class="sl2">الصفوف</div></div></div>
+        <div class="sc"><div class="si" style="background:var(--gl)">📚</div><div><div class="sn" id="ds-b">0</div><div class="sl2">الكتب</div></div></div>
+        <div class="sc"><div class="si" style="background:var(--rl)">🪪</div><div><div class="sn" id="ds-c">0</div><div class="sl2">البطاقات المطبوعة</div></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="pn">
+          <div class="ph">🕐 آخر الطلاب <button class="btn bo sm2" onclick="go('stu',document.querySelector('.mi:nth-child(4)'))">عرض الكل</button></div>
+          <div id="ds-list"><div class="em"><div>👨‍🎓</div><p>لا يوجد طلاب بعد</p></div></div>
+        </div>
+        <div class="pn">
+          <div class="ph">📊 توزيع الطلاب</div>
+          <div id="ds-dist" style="padding:14px 20px"><div class="em" style="padding:30px 10px"><div>📊</div><p>أضف طلاباً لرؤية التوزيع</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="pg" id="p-stu">
+      <div class="sr">
+        <div class="sw2"><span class="si2">🔍</span><input id="sq" placeholder="بحث بالاسم أو الرقم..." oninput="rStu()"></div>
+        <select id="sf" onchange="rStu()" style="width:150px"><option value="">كل الصفوف</option></select>
+      </div>
+      <div class="pn">
+        <div class="ph">👨‍🎓 الطلاب <span id="sc2" class="bx bb">0</span></div>
+        <div id="st"><div class="em"><div>👨‍🎓</div><h3>لا يوجد طلاب</h3><p>اضغط "إضافة طالب"</p></div></div>
+      </div>
+    </div>
+
+    <!-- CLASSES -->
+    <div class="pg" id="p-cls">
+      <div class="pn">
+        <div class="ph">🏫 الصفوف — الأول حتى التاسع</div>
+        <div class="pb"><div class="cg" id="cl-grid"></div></div>
+      </div>
+    </div>
+
+    <!-- BOOKS -->
+    <div class="pg" id="p-bk">
+      <div class="sr">
+        <div class="sw2"><span class="si2">🔍</span><input id="bq" placeholder="بحث عن كتاب..." oninput="rBk()"></div>
+        <select id="bf" onchange="rBk()" style="width:150px"><option value="">كل الصفوف</option></select>
+      </div>
+      <div id="bk-list"><div class="em"><div>📚</div><h3>لا توجد كتب</h3><p>اضغط "إضافة كتاب"</p></div></div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="pg" id="p-cd">
+      <div class="sr">
+        <div class="sw2"><span class="si2">🔍</span><input id="cq" placeholder="بحث عن طالب..." oninput="rCd()"></div>
+        <select id="cf" onchange="rCd()" style="width:150px"><option value="">كل الصفوف</option></select>
+      </div>
+      <div id="cd-list"><div class="em"><div>🪪</div><h3>لا توجد بطاقات</h3><p>أضف طلاباً أولاً</p></div></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL: STUDENT -->
+<div class="mo" id="m-stu">
+  <div class="md">
+    <div class="mh"><h3 id="m-stu-t">➕ إضافة طالب</h3><button class="xb" onclick="cm('m-stu')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi fw"><label>الاسم الكامل *</label><input id="s-n" placeholder="أحمد محمد علي"></div>
+        <div class="fi"><label>رقم الطالب</label><input id="s-i" readonly style="background:#f5f7fa;color:#aaa"></div>
+        <div class="fi"><label>الصف *</label><select id="s-c"></select></div>
+        <div class="fi"><label>تاريخ الميلاد</label><input type="date" id="s-d"></div>
+        <div class="fi"><label>هاتف ولي الأمر</label><input id="s-p" placeholder="05XXXXXXXX"></div>
+        <div class="fi"><label>السنة الدراسية</label><input id="s-y" value="2024-2025"></div>
+        <div class="fi fw"><label>ملاحظات</label><textarea id="s-no" rows="2" placeholder="ملاحظات..."></textarea></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="cm('m-stu')">إلغاء</button><button class="btn bp" onclick="saveStu()">💾 حفظ</button></div>
+  </div>
+</div>
+
+<!-- MODAL: BOOK -->
+<div class="mo" id="m-bk">
+  <div class="md">
+    <div class="mh"><h3 id="m-bk-t">📚 إضافة كتاب</h3><button class="xb" onclick="cm('m-bk')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi fw"><label>اسم الكتاب *</label><input id="b-n" placeholder="رياضيات الصف الأول"></div>
+        <div class="fi"><label>الصف *</label><select id="b-c"></select></div>
+        <div class="fi"><label>المادة</label><input id="b-s" placeholder="رياضيات"></div>
+        <div class="fi"><label>المؤلف</label><input id="b-a" placeholder="اسم المؤلف"></div>
+        <div class="fi"><label>عدد النسخ</label><input type="number" id="b-cp" min="0" placeholder="0"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="cm('m-bk')">إلغاء</button><button class="btn bp" onclick="saveBk()">💾 حفظ</button></div>
+  </div>
+</div>
+
+<!-- MODAL: CARD -->
+<div class="mo" id="m-cd">
+  <div class="md" style="width:430px">
+    <div class="mh"><h3>🪪 بطاقة الطالب</h3><button class="xb" onclick="cm('m-cd')">✕</button></div>
+    <div class="mb"><div id="m-cd-body"></div></div>
+    <div class="mf"><button class="btn bo" onclick="cm('m-cd')">إغلاق</button><button class="btn ba" onclick="prtCard()">🖨️ طباعة</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+<!-- PRINT -->
+<div class="prt" id="prt"></div>
+
+<script>
+const CL=[{id:1,n:'الأول',a:'١'},{id:2,n:'الثاني',a:'٢'},{id:3,n:'الثالث',a:'٣'},{id:4,n:'الرابع',a:'٤'},{id:5,n:'الخامس',a:'٥'},{id:6,n:'السادس',a:'٦'},{id:7,n:'السابع',a:'٧'},{id:8,n:'الثامن',a:'٨'},{id:9,n:'التاسع',a:'٩'}];
+let S=JSON.parse(localStorage.getItem('ql_s')||'[]');
+let B=JSON.parse(localStorage.getItem('ql_b')||'[]');
+let P=+localStorage.getItem('ql_p')||0;
+let eSid=null,eBid=null,curCard=null,sbOpen=true;
+
+const sv=()=>{localStorage.setItem('ql_s',JSON.stringify(S));localStorage.setItem('ql_b',JSON.stringify(B))};
+const gid=p=>p+'-'+Date.now().toString().slice(-6);
+const gcn=id=>CL.find(c=>c.id==id)?.n||'—';
+const ini=n=>n.split(' ').map(x=>x[0]||'').join('').slice(0,2);
+
+function toast(msg,t=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='on '+(t||'');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.className='',2600);
+}
+
+function om(id){document.getElementById(id).classList.add('on')}
+function cm(id){document.getElementById(id).classList.remove('on');eSid=null;eBid=null}
+document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('on')}));
+
+// Sidebar toggle
+function tog(){
+  sbOpen=!sbOpen;
+  document.getElementById('sb').classList.toggle('off',!sbOpen);
+  document.getElementById('ov').classList.toggle('on',!sbOpen);
+  document.getElementById('mn').classList.toggle('wide',!sbOpen);
+}
+
+// Page navigation
+const titles={dash:['لوحة التحكم','نظرة عامة'],stu:['الطلاب','إدارة بيانات الطلاب'],cls:['الصفوف','الأول حتى التاسع'],bk:['الكتب','الكتب الدراسية'],cd:['البطاقات','بطاقات الهوية']};
+const acts={stu:`<button class="btn bp" onclick="oAS()">➕ إضافة طالب</button>`,bk:`<button class="btn bp" onclick="oAB()">➕ إضافة كتاب</button>`,cd:`<button class="btn ba" onclick="prtAll()">🖨️ طباعة الكل</button>`};
+function go(pg,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('on'));
+  document.getElementById('p-'+pg).classList.add('on');
+  if(el)el.classList.add('on');
+  document.getElementById('ptitle').textContent=titles[pg][0];
+  document.getElementById('psub').textContent=titles[pg][1];
+  document.getElementById('tact').innerHTML=acts[pg]||'';
+  if(pg==='dash')rDash();
+  if(pg==='stu')rStu();
+  if(pg==='cls')rCls();
+  if(pg==='bk')rBk();
+  if(pg==='cd')rCd();
+  // auto-close sidebar on mobile feel
+  if(window.innerWidth<768&&sbOpen)tog();
+}
+
+// Populate selects
+function pSel(){
+  ['s-c','b-c','sf','bf','cf'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const isF=id.length===2;const cv=el.value;
+    el.innerHTML=isF?'<option value="">كل الصفوف</option>':'<option value="">-- اختر --</option>';
+    CL.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent='الصف '+c.n;el.appendChild(o);});
+    el.value=cv;
+  });
+}
+
+// DASHBOARD
+function rDash(){
+  document.getElementById('ds-s').textContent=S.length;
+  document.getElementById('ds-b').textContent=B.length;
+  document.getElementById('ds-c').textContent=P;
+  const list=document.getElementById('ds-list');
+  if(!S.length){list.innerHTML='<div class="em" style="padding:30px"><div>👨‍🎓</div><p>لا يوجد طلاب</p></div>';
+  }else{
+    list.innerHTML='<table><thead><tr><th>الاسم</th><th>الصف</th><th>الرقم</th></tr></thead><tbody>'+
+    [...S].reverse().slice(0,5).map(s=>`<tr><td><b>${s.n}</b></td><td><span class="bx bb">الصف ${gcn(s.c)}</span></td><td style="font-family:monospace;font-size:.75rem;color:var(--tm)">${s.i}</td></tr>`).join('')+
+    '</tbody></table>';
+  }
+  const dist=document.getElementById('ds-dist');
+  if(!S.length){dist.innerHTML='<div class="em" style="padding:20px 10px"><div>📊</div><p>أضف طلاباً</p></div>';return;}
+  const cnt={};CL.forEach(c=>cnt[c.id]=0);S.forEach(s=>{if(cnt[s.c]!==undefined)cnt[s.c]++});
+  const mx=Math.max(...Object.values(cnt),1);
+  dist.innerHTML='<div style="padding:14px 20px">'+CL.map(c=>`<div class="db"><div class="db-lb">الصف ${c.n}</div><div class="db-br"><div class="db-fill" style="width:${cnt[c.id]/mx*100}%"></div></div><div class="db-ct">${cnt[c.id]}</div></div>`).join('')+'</div>';
+}
+
+// STUDENTS
+function oAS(){
+  eSid=null;
+  document.getElementById('s-n').value='';
+  document.getElementById('s-i').value=gid('STU');
+  document.getElementById('s-c').value='';
+  document.getElementById('s-d').value='';
+  document.getElementById('s-p').value='';
+  document.getElementById('s-y').value='2024-2025';
+  document.getElementById('s-no').value='';
+  document.getElementById('m-stu-t').textContent='➕ إضافة طالب جديد';
+  om('m-stu');
+}
+function eS(id){
+  const s=S.find(x=>x.i===id);if(!s)return;eSid=id;
+  document.getElementById('s-n').value=s.n;document.getElementById('s-i').value=s.i;
+  document.getElementById('s-c').value=s.c;document.getElementById('s-d').value=s.d||'';
+  document.getElementById('s-p').value=s.p||'';document.getElementById('s-y').value=s.y||'2024-2025';
+  document.getElementById('s-no').value=s.no||'';
+  document.getElementById('m-stu-t').textContent='✏️ تعديل بيانات الطالب';
+  om('m-stu');
+}
+function saveStu(){
+  const n=document.getElementById('s-n').value.trim();
+  const c=parseInt(document.getElementById('s-c').value);
+  if(!n){toast('يرجى إدخال الاسم','er');return}
+  if(!c){toast('يرجى اختيار الصف','er');return}
+  const d={n,c,d:document.getElementById('s-d').value,p:document.getElementById('s-p').value,y:document.getElementById('s-y').value||'2024-2025',no:document.getElementById('s-no').value};
+  if(eSid){const i=S.findIndex(x=>x.i===eSid);if(i>-1){S[i]={...S[i],...d};toast('تم التحديث ✅')}}
+  else{S.push({i:document.getElementById('s-i').value,...d,at:Date.now()});toast('تمت الإضافة ✅','ok')}
+  sv();cm('m-stu');rStu();
+}
+function delS(id){
+  if(!confirm('حذف هذا الطالب؟'))return;
+  S=S.filter(s=>s.i!==id);sv();rStu();toast('تم الحذف 🗑️');
+}
+function rStu(){
+  const q=document.getElementById('sq').value.toLowerCase();
+  const cl=document.getElementById('sf').value;
+  const f=S.filter(s=>(!q||(s.n.toLowerCase().includes(q)||s.i.toLowerCase().includes(q)))&&(!cl||s.c==cl));
+  document.getElementById('sc2').textContent=f.length;
+  if(!f.length){document.getElementById('st').innerHTML=`<div class="em"><div>👨‍🎓</div><h3>${!S.length?'لا يوجد طلاب':'لا نتائج'}</h3><p>${!S.length?'اضغط إضافة طالب':'غيّر معايير البحث'}</p></div>`;return}
+  document.getElementById('st').innerHTML='<table><thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الرقم</th><th>ولي الأمر</th><th>السنة</th><th>إجراءات</th></tr></thead><tbody>'+
+  f.map((s,i)=>`<tr><td style="color:var(--tm);font-size:.75rem">${i+1}</td><td><b>${s.n}</b>${s.no?`<br><small style="color:var(--tm)">${s.no}</small>`:''}</td><td><span class="bx bb">الصف ${gcn(s.c)}</span></td><td style="font-family:monospace;font-size:.75rem;color:var(--tm)">${s.i}</td><td>${s.p||'—'}</td><td><span class="bx bgo">${s.y||'—'}</span></td><td><div style="display:flex;gap:5px"><button class="btn bg2 sm2" onclick="showCard('${s.i}')">🪪</button><button class="btn bo sm2" onclick="eS('${s.i}')">✏️</button><button class="btn bd sm2" onclick="delS('${s.i}')">🗑️</button></div></td></tr>`).join('')+
+  '</tbody></table>';
+}
+
+// CLASSES
+function rCls(){
+  document.getElementById('cl-grid').innerHTML=CL.map(c=>{
+    const cnt=S.filter(s=>s.c==c.id).length;
+    return`<div class="cc" onclick="filtCls(${c.id})"><div class="cn">${c.a}</div><div style="font-weight:700;margin-bottom:6px">الصف ${c.n}</div><span class="bx bb">${cnt} طالب</span></div>`;
+  }).join('');
+}
+function filtCls(id){
+  go('stu',document.querySelectorAll('.mi')[3]);
+  document.getElementById('sf').value=id;rStu();
+}
+
+// BOOKS
+function oAB(){
+  eBid=null;
+  ['b-n','b-s','b-a'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-c').value='';document.getElementById('b-cp').value='';
+  document.getElementById('m-bk-t').textContent='📚 إضافة كتاب جديد';
+  om('m-bk');
+}
+function eB(id){
+  const b=B.find(x=>x.i===id);if(!b)return;eBid=id;
+  document.getElementById('b-n').value=b.n;document.getElementById('b-c').value=b.c;
+  document.getElementById('b-s').value=b.s||'';document.getElementById('b-a').value=b.a||'';
+  document.getElementById('b-cp').value=b.cp||'';
+  document.getElementById('m-bk-t').textContent='✏️ تعديل الكتاب';
+  om('m-bk');
+}
+function saveBk(){
+  const n=document.getElementById('b-n').value.trim();
+  const c=parseInt(document.getElementById('b-c').value);
+  if(!n){toast('يرجى إدخال اسم الكتاب','er');return}
+  if(!c){toast('يرجى اختيار الصف','er');return}
+  const d={n,c,s:document.getElementById('b-s').value,a:document.getElementById('b-a').value,cp:document.getElementById('b-cp').value};
+  if(eBid){const i=B.findIndex(x=>x.i===eBid);if(i>-1){B[i]={...B[i],...d};toast('تم التحديث ✅')}}
+  else{B.push({i:gid('BK'),...d,at:Date.now()});toast('تمت الإضافة ✅','ok')}
+  sv();cm('m-bk');rBk();
+}
+function delB(id){
+  if(!confirm('حذف هذا الكتاب؟'))return;
+  B=B.filter(b=>b.i!==id);sv();rBk();toast('تم الحذف 🗑️');
+}
+const bIco={'رياضيات':'📐','علوم':'🔬','عربي':'✍️','إنجليزي':'🔤','تاريخ':'📜','جغرافيا':'🌍','دين':'📖'};
+function getBI(s){for(const[k,v]of Object.entries(bIco))if(s&&s.includes(k))return v;return'📚'}
+function rBk(){
+  const q=document.getElementById('bq').value.toLowerCase();
+  const cl=document.getElementById('bf').value;
+  const f=B.filter(b=>(!q||b.n.toLowerCase().includes(q))&&(!cl||b.c==cl));
+  const el=document.getElementById('bk-list');
+  if(!f.length){el.innerHTML=`<div class="em"><div>📚</div><h3>${!B.length?'لا توجد كتب':'لا نتائج'}</h3></div>`;return}
+  el.innerHTML='<div class="bkg">'+f.map(b=>`<div class="bkc"><div style="font-size:1.8rem;margin-bottom:8px">${getBI(b.s)}</div><div style="font-weight:700;margin-bottom:3px">${b.n}</div><div style="font-size:.75rem;color:var(--tm)">الصف ${gcn(b.c)}</div>${b.s?`<div style="font-size:.72rem;color:var(--tm);margin-top:3px">📌 ${b.s}</div>`:''} ${b.a?`<div style="font-size:.72rem;color:var(--tm)">👤 ${b.a}</div>`:''} ${b.cp?`<div style="font-size:.72rem;color:var(--g);font-weight:700;margin-top:4px">📦 ${b.cp} نسخة</div>`:''}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn bo sm2" onclick="eB('${b.i}')">✏️ تعديل</button><button class="btn bd sm2" onclick="delB('${b.i}')">🗑️</button></div></div>`).join('')+'</div>';
+}
+
+// CARDS
+function mkCard(s){
+  return`<div class="scd" onclick="showCard('${s.i}')">
+    <div class="scd-in">
+      <div class="scd-top"><div class="scd-sch">✏️ مدرسة القلم</div></div>
+      <div class="scd-body">
+        <div class="scd-av">${ini(s.n)}</div>
+        <div><div class="scd-nm">${s.n}</div><div class="scd-cl">📚 الصف ${gcn(s.c)}</div></div>
+      </div>
+      <div class="scd-ft"><div class="scd-id">${s.i}</div><div class="scd-yr">${s.y||'2024-2025'}</div></div>
+    </div>
+  </div>`;
+}
+function showCard(id){
+  const s=S.find(x=>x.i===id);if(!s)return;curCard=s;
+  document.getElementById('m-cd-body').innerHTML=`<div class="ppv">
+    <div class="ppv-in">
+      <div class="ppv-hd"><div class="ppv-logo"><div class="ppv-icon">✏️</div><div class="ppv-nm"><h3>مدرسة القلم</h3><span>للتعليم الأساسي</span></div></div><div class="ppv-tp">بطاقة طالب</div></div>
+      <div class="ppv-bd">
+        <div class="ppv-av">${ini(s.n)}</div>
+        <div class="ppv-info"><h2>${s.n}</h2><div class="ppv-bg"><span class="ppv-g">📚 الصف ${gcn(s.c)}</span><span class="ppv-w">📅 ${s.y||'2024-2025'}</span></div>${s.d?`<div class="ppv-d">🎂 ${s.d}</div>`:''}${s.p?`<div class="ppv-d">📞 ${s.p}</div>`:''}</div>
+      </div>
+      <div class="ppv-ft"><div class="ppv-id">${s.i}</div><div class="ppv-yr">السنة الدراسية ${s.y||'2024-2025'}</div></div>
+    </div>
+  </div>`;
+  om('m-cd');
+}
+function mkPrtCard(s){
+  return`<div class="prc"><div class="prc-p"></div><div class="prc-i"><div class="prc-tp">✏️ مدرسة القلم للتعليم الأساسي</div><div class="prc-bd"><div class="prc-av">${ini(s.n)}</div><div><div class="prc-nm">${s.n}</div><div class="prc-cl">📚 الصف ${gcn(s.c)}</div></div></div><div class="prc-ft"><div class="prc-id">${s.i}</div><div class="prc-yr">${s.y||'2024-2025'}</div></div></div></div>`;
+}
+function prtCard(){
+  if(!curCard)return;
+  document.getElementById('prt').innerHTML=mkPrtCard(curCard);
+  P++;localStorage.setItem('ql_p',P);
+  window.print();toast('جاري الطباعة 🖨️','ok');
+}
+function prtAll(){
+  if(!S.length){toast('لا يوجد طلاب','er');return}
+  document.getElementById('prt').innerHTML=S.map(s=>mkPrtCard(s)).join('');
+  P+=S.length;localStorage.setItem('ql_p',P);
+  window.print();toast('طباعة جميع البطاقات 🖨️','ok');
+}
+function rCd(){
+  const q=document.getElementById('cq').value.toLowerCase();
+  const cl=document.getElementById('cf').value;
+  const f=S.filter(s=>(!q||s.n.toLowerCase().includes(q))&&(!cl||s.c==cl));
+  const el=document.getElementById('cd-list');
+  if(!f.length){el.innerHTML=`<div class="em"><div>🪪</div><h3>${!S.length?'لا توجد بطاقات':'لا نتائج'}</h3><p>${!S.length?'أضف طلاباً أولاً':''}</p></div>`;return}
+  el.innerHTML='<div class="cdg">'+f.map(s=>mkCard(s)).join('')+'</div>';
+}
+
+// INIT
+pSel();rDash();
+</script>
+</body>
+</html>
